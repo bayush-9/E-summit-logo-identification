@@ -67,50 +67,59 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: _loading
-          ? Container(
-              alignment: Alignment.center,
-              child: const CircularProgressIndicator(),
-            )
-          : SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _image == null
-                      ? const Text(
-                          "Please scan any E-summit \n logo to proceed",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white, fontSize: 23),
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.all(18.0),
-                          child: Image.file(File(_image!.path)),
-                        ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  ElevatedButton.icon(
-                    label: const Text(
-                      "Take a Picture",
-                      style: TextStyle(color: Colors.white, fontSize: 20.0),
+      body: SingleChildScrollView(
+        child: _loading
+            ? Container(
+                alignment: Alignment.center,
+                child: const CircularProgressIndicator(),
+              )
+            : SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _image == null
+                        ? SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.45,
+                          )
+                        : SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.10,
+                          ),
+                    _image == null
+                        ? const Text(
+                            "Please scan any E-summit \n logo to proceed",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white, fontSize: 23),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.all(18.0),
+                            child: Image.file(File(_image!.path)),
+                          ),
+                    const SizedBox(
+                      height: 20,
                     ),
-                    icon: Icon(Icons.camera),
-                    onPressed: openCamera,
-                  ),
-                  const Padding(padding: EdgeInsets.all(10.0)),
-                  ElevatedButton.icon(
-                    label: const Text(
-                      "Upload from Gallery",
-                      style: TextStyle(color: Colors.white, fontSize: 20.0),
+                    ElevatedButton.icon(
+                      label: const Text(
+                        "Take a Picture",
+                        style: TextStyle(color: Colors.white, fontSize: 20.0),
+                      ),
+                      icon: Icon(Icons.camera),
+                      onPressed: openCamera,
                     ),
-                    icon: Icon(Icons.photo_album),
-                    onPressed: openGallery,
-                  )
-                ],
+                    const Padding(padding: EdgeInsets.all(10.0)),
+                    ElevatedButton.icon(
+                      label: const Text(
+                        "Upload from Gallery",
+                        style: TextStyle(color: Colors.white, fontSize: 20.0),
+                      ),
+                      icon: Icon(Icons.photo_album),
+                      onPressed: openGallery,
+                    )
+                  ],
+                ),
               ),
-            ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         child: Image.asset('assets/ecell_logo_dark.jpeg'),
