@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 import 'dart:async';
 import 'package:tflite/tflite.dart';
@@ -25,7 +26,6 @@ class _HomepageState extends State<Homepage> {
     });
   }
 
-//Load the Tflite model
   loadModel() async {
     await Tflite.loadModel(
       model: "assets/model_unquant.tflite",
@@ -41,9 +41,12 @@ class _HomepageState extends State<Homepage> {
       imageMean: 127.5,
       imageStd: 127.5,
     );
+    print(output![0]['label']);
+    if (output[0]["label"] == '1 E cell') {
+      await launchUrl(Uri.parse('https://www.ecelliitbhu.com/'));
+    }
     setState(() {
       _loading = false;
-      //Declare List _outputs in the class which will be used to show the classified classs name and confidence
       _outputs = output;
     });
   }
@@ -63,76 +66,56 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Image Classification'),
-        backgroundColor: Colors.purple,
-      ),
+      backgroundColor: Colors.black,
       body: _loading
           ? Container(
               alignment: Alignment.center,
-              child: CircularProgressIndicator(),
+              child: const CircularProgressIndicator(),
             )
-          : Container(
+          : SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _image == null ? Container() : Image.file(File(_image!.path)),
-                  SizedBox(
+                  _image == null
+                      ? const Text(
+                          "Please scan any E-summit \n logo to proceed",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white, fontSize: 23),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.all(18.0),
+                          child: Image.file(File(_image!.path)),
+                        ),
+                  const SizedBox(
                     height: 20,
                   ),
-                  _outputs != null
-                      ? Text(
-                          '${_outputs![0]["label"]}',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20.0,
-                            background: Paint()..color = Colors.white,
-                          ),
-                        )
-                      : Container()
-                ],
-              ),
-            ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _optiondialogbox,
-        backgroundColor: Colors.purple,
-        child: Icon(Icons.image),
-      ),
-    );
-  }
-
-  //camera method
-  Future<void> _optiondialogbox() {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            backgroundColor: Colors.purple,
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  GestureDetector(
-                    child: Text(
+                  ElevatedButton.icon(
+                    label: const Text(
                       "Take a Picture",
                       style: TextStyle(color: Colors.white, fontSize: 20.0),
                     ),
-                    onTap: openCamera,
+                    icon: Icon(Icons.camera),
+                    onPressed: openCamera,
                   ),
-                  Padding(padding: EdgeInsets.all(10.0)),
-                  GestureDetector(
-                    child: Text(
-                      "Select image ",
+                  const Padding(padding: EdgeInsets.all(10.0)),
+                  ElevatedButton.icon(
+                    label: const Text(
+                      "Upload from Gallery",
                       style: TextStyle(color: Colors.white, fontSize: 20.0),
                     ),
-                    onTap: openGallery,
+                    icon: Icon(Icons.photo_album),
+                    onPressed: openGallery,
                   )
                 ],
               ),
             ),
-          );
-        });
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Image.asset('assets/ecell_logo_dark.jpeg'),
+      ),
+    );
   }
 
   Future openCamera() async {
@@ -143,7 +126,6 @@ class _HomepageState extends State<Homepage> {
     });
   }
 
-  //camera method
   Future openGallery() async {
     var piture = await _picker.getImage(source: ImageSource.gallery);
     setState(() {

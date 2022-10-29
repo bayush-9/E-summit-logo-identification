@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:image_identifier/screens/splash_screen.dart';
 
-import 'home_page.dart';
+import 'screens/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,9 +14,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.purple,
       ),
-      home: Homepage(),
+      home: MySplashScreen(),
     );
   }
 }
